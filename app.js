@@ -12,7 +12,7 @@ import { createScene } from "./scene.js";
 
 const PAST_DAYS = 14;
 const FORECAST_DAYS = 7;
-const CITY_STORAGE_KEY = "7stopni.city";
+const CITY_STORAGE_KEY = "zmienopony.city";
 const GAUGE_MIN_C = -5;
 const GAUGE_MAX_C = 20;
 
@@ -281,7 +281,7 @@ async function share() {
   const { text, url } = shareText();
   if (navigator.share) {
     try {
-      await navigator.share({ title: "7 stopni", text, url });
+      await navigator.share({ title: "Zmień opony", text, url });
       return;
     } catch (error) {
       if (error.name === "AbortError") return;
