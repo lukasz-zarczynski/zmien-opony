@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>7 stopni – czy to już czas na zmianę opon?</title>
+  <meta name="description" content="Sprawdź w 3 sekundy, czy w Twojej okolicy to już czas na zimówki albo letnie opony. Średnia temperatura z 7 dni kontra magiczne 7°C.">
+  <meta name="theme-color" content="#1d3a63">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://7stopni.pl/">
+  <meta property="og:title" content="Czy to już czas na zmianę opon? Sprawdź na 7stopni.pl">
+  <meta property="og:description" content="TAK albo NIE – dla Twojej okolicy, na podstawie średniej temperatury z ostatnich 7 dni.">
+  <meta property="og:image" content="https://7stopni.pl/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="pl_PL">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"
+          integrity="sha384-dug+JxfBvklEQdJ4AYuBBAIScUz0bVN73xpy273gcAwHjb3qI0fXmuYNaNfdyYJG"
+          crossorigin="anonymous" defer></script>
+  <script src="app.js" type="module"></script>
+</head>
+<body data-scene="calm">
+  <div class="sky" aria-hidden="true">
+    <div class="sky__layer" data-layer="calm"></div>
+    <div class="sky__layer" data-layer="snow"></div>
+    <div class="sky__layer" data-layer="sun"></div>
+    <div class="sky__layer" data-layer="leaves"></div>
+    <div class="sky__layer" data-layer="rain"></div>
+    <div class="sun"><div class="sun__rays"></div><div class="sun__core"></div></div>
+    <canvas class="sky__particles" id="scene"></canvas>
+  </div>
+
+  <main class="page">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="7 stopni – strona główna">
+        <svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="30" fill="#1b1f24"/>
+          <circle cx="32" cy="32" r="26" fill="none" stroke="#3a4048" stroke-width="5" stroke-dasharray="4 4.2"/>
+          <circle cx="32" cy="32" r="19" fill="url(#hub)"/>
+          <defs>
+            <linearGradient id="hub" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0.5" stop-color="#3987e5"/><stop offset="0.5" stop-color="#eb6834"/>
+            </linearGradient>
+          </defs>
+          <text x="33" y="40" text-anchor="middle" font-family="Bricolage Grotesque, system-ui, sans-serif" font-size="21" font-weight="800" fill="#fff">7°</text>
+        </svg>
+        <span class="brand__name">7 stopni</span>
+      </a>
+      <button type="button" class="icon-button" id="share-top" aria-label="Udostępnij">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </header>
+
+    <section class="card hero" aria-labelledby="verdict-question">
+      <div class="hero__controls">
+        <button type="button" class="chip" id="change-location" aria-expanded="false" aria-controls="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></svg>
+          <span id="location-name">Ustalam lokalizację…</span>
+          <svg class="chip__caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="toggle" role="group" aria-label="Kierunek zmiany">
+          <button type="button" class="toggle__option" data-direction="winter" aria-pressed="false">❄️ Na zimowe</button>
+          <button type="button" class="toggle__option" data-direction="summer" aria-pressed="false">☀️ Na letnie</button>
+        </div>
+      </div>
+
+      <div class="search" id="search" hidden>
+        <p class="search__hint" id="search-hint">Wpisz nazwę miejscowości.</p>
+        <form class="search__form" id="search-form" autocomplete="off">
+          <label class="visually-hidden" for="search-input">Miejscowość</label>
+          <input type="search" id="search-input" placeholder="np. Kraków, Suwałki, Zakopane" required minlength="2">
+          <button type="submit" class="button button--small">Szukaj</button>
+        </form>
+        <ul class="search__results" id="search-results"></ul>
+        <button type="button" class="text-button" id="use-geolocation">📡 Użyj mojej lokalizacji</button>
+      </div>
+
+      <div class="verdict" id="verdict" data-state="loading" aria-live="polite">
+        <h1 class="verdict__question" id="verdict-question">Czas zmienić opony?</h1>
+        <div class="verdict__answer-wrap">
+          <p class="verdict__answer" id="verdict-answer"></p>
+          <div class="loader" aria-hidden="true">
+            <svg viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="28" fill="#1b1f24"/>
+              <circle cx="32" cy="32" r="24" fill="none" stroke="#3a4048" stroke-width="5" stroke-dasharray="4 4"/>
+              <circle cx="32" cy="32" r="12" fill="#9aa3ad"/>
+              <circle cx="32" cy="32" r="4" fill="#1b1f24"/>
+            </svg>
+          </div>
+        </div>
+        <p class="verdict__explanation" id="verdict-explanation">Sprawdzam termometry w okolicy…</p>
+
+        <div class="gauge" id="gauge" hidden>
+          <div class="gauge__track">
+            <span class="gauge__threshold"><span>7°C</span></span>
+            <span class="gauge__marker" id="gauge-marker"><span class="gauge__value" id="gauge-value"></span></span>
+          </div>
+          <div class="gauge__legend"><span>❄️ zimówki</span><span>letnie ☀️</span></div>
+        </div>
+
+        <p class="pill pill--warning" id="verdict-near" hidden>⚠️ Blisko progu – zajrzyj tu znowu za kilka dni</p>
+        <button type="button" class="quip" id="quip" hidden title="Kliknij po kolejny tekst"></button>
+
+        <div class="verdict__actions" id="verdict-actions" hidden>
+          <button type="button" class="button" id="share-main">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Wyślij znajomym
+          </button>
+          <p class="verdict__forecast" id="verdict-forecast"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card chart-card" id="chart-card" hidden aria-labelledby="chart-title">
+      <div class="chart-card__head">
+        <h2 id="chart-title">Jak było i jak będzie</h2>
+        <p>Średnia temperatura dobowa: 14 dni wstecz i 7 dni prognozy.</p>
+      </div>
+      <div class="chart-card__canvas">
+        <canvas id="chart" role="img" aria-label="Wykres średniej temperatury dobowej względem progu 7°C"></canvas>
+      </div>
+      <details class="chart-card__table">
+        <summary>Pokaż dane w tabeli</summary>
+        <table>
+          <thead><tr><th scope="col">Dzień</th><th scope="col">Średnia dobowa</th><th scope="col">Średnia 7-dniowa</th></tr></thead>
+          <tbody id="data-table"></tbody>
+        </table>
+      </details>
+    </section>
+
+    <section class="facts" aria-label="Jak to działa">
+      <article class="card fact">
+        <p class="fact__big">7°C</p>
+        <p>Poniżej tej temperatury guma letnich opon twardnieje i traci przyczepność. Zimowe – odwrotnie.</p>
+      </article>
+      <article class="card fact">
+        <p class="fact__big">7 dni</p>
+        <p>Liczymy średnią z ostatniego tygodnia (bez dzisiaj), żeby jeden mroźny poranek nie siał paniki.</p>
+      </article>
+      <article class="card fact">
+        <p class="fact__big">0 kont</p>
+        <p>Bez logowania i bez serwera. Lokalizację wysyłamy tylko do serwisu pogodowego.</p>
+      </article>
+    </section>
+
+    <footer class="footer">
+      <p>Masz opony całoroczne? Gratulacje, ta strona nie jest dla Ciebie. 😎</p>
+      <p>Prognoza jest poglądowa i nie wpływa na odpowiedź. Decyzja i tak należy do Ciebie – i do wulkanizatora.</p>
+      <p class="footer__meta">Dane pogodowe: <a href="https://open-meteo.com/" rel="noopener">Open-Meteo.com</a> (CC BY 4.0)<span id="updated-at"></span></p>
+    </footer>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
