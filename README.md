@@ -1,6 +1,6 @@
 # Zmień opony (zmienopony.com)
 
-A static Polish page that answers one question: is it time to change tires? It takes the user's location, averages the daily mean temperature over the last 7 complete days, and compares that average with the 7°C threshold. Terms are defined in [GLOSSARY.md](GLOSSARY.md).
+A static page (Polish for Polish browsers, English for everyone else) that answers one question: is it time to change tires? It takes the user's location, averages the daily mean temperature over the last 7 complete days, and compares that average with the 7°C threshold. Terms are defined in [GLOSSARY.md](GLOSSARY.md).
 
 There is no build step. The page has no backend of its own; the browser calls these services directly:
 
@@ -15,13 +15,14 @@ There is no build step. The page has no backend of its own; the browser calls th
 | `index.html` | Page markup |
 | `style.css` | Styles, light and dark |
 | `domain.js` | The rule: threshold, weekly mean, verdict |
-| `app.js` | Location, API calls, rendering, sharing |
+| `app.js` | Location, API calls, rendering, sharing, the install-app button |
+| `i18n.js` | Language detection (`navigator.language`, overridable with `?lang=en` / `?lang=pl`), all UI strings and the English versions of the static text in `index.html` (`data-i18n*` attributes) |
 | `scene.js` | Animated backdrop: snow, sun, leaves or drizzle, depending on the verdict |
-| `messages.js` | Funny one-liners shown under the verdict |
+| `messages.js` | Funny one-liners shown under the verdict, in both languages |
 | `og-image.png` | 1200×630 preview image for links shared on Messenger, WhatsApp, etc. |
 | `notify.js` | Season Alerts: service worker registration, push subscription, calls to the alerts API |
-| `sw.js` | Service worker that shows Season Alerts |
-| `manifest.json`, `icon-*.png`, `apple-touch-icon.png` | Web app manifest and icons (iPhone needs the page added to the home screen for push) |
+| `sw.js` | Service worker that shows Season Alerts, in the device's language |
+| `manifest.json`, `icon-*.png`, `apple-touch-icon.png` | Web app manifest and icons. The page is installable as an app: Chrome/Edge/Samsung Internet show an install button in the top bar, and on iPhone the button explains Share → Add to Home Screen (also needed there for push) |
 | `worker/` | Cloudflare Worker for Season Alerts (not part of the static site) |
 | `staticwebapp.config.json` | Azure security headers (CSP allows only the APIs above and Google Fonts) |
 

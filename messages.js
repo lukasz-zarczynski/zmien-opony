@@ -1,6 +1,8 @@
 // Light-hearted one-liners shown under the Verdict, keyed by scene.
 
-export const QUIPS = {
+import { lang } from "./i18n.js";
+
+const QUIPS_PL = {
   snow: [
     "Zima nie pyta, czy masz już termin u wulkanizatora.",
     "Letnie opony na zimnym asfalcie to jak klapki na Kasprowym.",
@@ -31,6 +33,40 @@ export const QUIPS = {
     "Cierpliwości. Bociany też jeszcze nie wszystkie wróciły.",
   ],
 };
+
+const QUIPS_EN = {
+  snow: [
+    "Winter doesn't care whether you've booked the tire shop yet.",
+    "Summer tires on cold asphalt are like flip-flops on a ski slope.",
+    "Call the tire shop before the rest of town does.",
+    "The first snow surprises the road crews every year. It doesn't have to surprise you.",
+    "The snowman already has his winter tires on. Do you?",
+    "Below 7°C summer tires go as hard as butter straight from the fridge.",
+  ],
+  sun: [
+    "Winter tires on warm roads wear out faster than your patience in traffic.",
+    "The sun is out. So is the queue at the tire shop.",
+    "Time to put the winter tires in the basement. Next to the sled.",
+    "Winter tires in summer? A waste of rubber and fuel.",
+    "Spring! Your winter tires have earned a holiday.",
+  ],
+  leaves: [
+    "Relax. It's leaves falling from the sky, not snowflakes.",
+    "Not yet. But keep the tire shop's number handy.",
+    "Your summer tires say: just a few more rides.",
+    "The winter tires are resting in the basement. Give them a moment.",
+    "Raking leaves – yes. Changing tires – not yet.",
+  ],
+  rain: [
+    "Spring weather: a bit of winter, a bit of summer.",
+    "Not yet. Winter tires still have something to say this season.",
+    "The last frost loves to show up when nobody expects it.",
+    "Let the summer tires rest a little longer. They deserve a break too.",
+    "Patience. Spring is still making up its mind.",
+  ],
+};
+
+export const QUIPS = lang === "pl" ? QUIPS_PL : QUIPS_EN;
 
 export function pickQuip(scene, previous) {
   const pool = QUIPS[scene] ?? [];

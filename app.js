@@ -7,8 +7,9 @@ import {
   verdict,
   weeklyMean,
 } from "./domain.js";
+import { lang, locale, t, translatePage } from "./i18n.js";
 import { pickQuip } from "./messages.js";
-import { alertStatus, alertSupport, subscribeAlert, unsubscribeAlert } from "./notify.js";
+import { alertStatus, alertSupport, isIos, isStandalone, subscribeAlert, unsubscribeAlert } from "./notify.js";
 import { createScene } from "./scene.js";
 
 const PAST_DAYS = 14;
@@ -26,9 +27,8 @@ const state = {
 };
 
 const $ = (id) => document.getElementById(id);
-const temperatureFormat = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const temperatureFormat = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const formatTemp = (c) => `${temperatureFormat.format(c)}°C`;
-const WEEKDAYS = ["nd", "pn", "wt", "śr", "cz", "pt", "sb"];
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 const scene = createScene($("scene"));
@@ -80,7 +80,7 @@ async function fetchWeather({ latitude, longitude }) {
 }
 
 async function searchCities(query) {
-  const params = new URLSearchParams({ name: query, count: 8, language: "pl", format: "json" });
+  const params = new URLSearchParams({ name: query, count: 8, language: lang, format: "json" });
   const data = await fetchJson(`https://geocoding-api.open-meteo.com/v1/search?${params}`);
   return (data.results ?? []).map((r) => ({
     name: r.name,
@@ -92,7 +92,7 @@ async function searchCities(query) {
 
 async function reverseGeocode({ latitude, longitude }) {
   try {
-    const params = new URLSearchParams({ latitude, longitude, localityLanguage: "pl" });
+    const params = new URLSearchParams({ latitude, longitude, localityLanguage: lang });
     const data = await fetchJson(`https://api.bigdatacloud.net/data/reverse-geocode-client?${params}`);
     return data.city || data.locality || null;
   } catch {
@@ -118,8 +118,8 @@ function getBrowserPosition() {
 
 async function useGeolocation() {
   hideSearch();
-  $("location-name").textContent = "Ustalam lokalizację…";
-  setVerdictMessage("loading", "Pytam przeglądarkę, gdzie jesteś…");
+  $("location-name").textContent = t.locating;
+  setVerdictMessage("loading", t.askingBrowser);
   try {
     const coords = await getBrowserPosition();
     const name = await reverseGeocode(coords);
@@ -128,25 +128,25 @@ async function useGeolocation() {
       ...coords,
     });
   } catch {
-    $("location-name").textContent = "Wybierz miejscowość";
-    setVerdictMessage("idle", "Nie wiemy, gdzie jesteś. Wpisz swoją miejscowość powyżej, a powiemy Ci, co z oponami.");
-    showSearch("Nie mamy dostępu do Twojej lokalizacji. Wpisz nazwę miejscowości.");
+    $("location-name").textContent = t.pickCity;
+    setVerdictMessage("idle", t.noLocation);
+    showSearch(t.noLocationHint);
   }
 }
 
 async function showLocation(location) {
   state.location = location;
   $("location-name").textContent = location.name;
-  setVerdictMessage("loading", "Sprawdzam termometry w okolicy…");
+  setVerdictMessage("loading", t.checking);
   try {
     state.weather = await fetchWeather(location);
-    $("updated-at").textContent = ` · pobrano ${new Date().toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" })}`;
+    $("updated-at").textContent = t.fetchedAt(new Date().toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }));
     render();
     renderChart();
     renderTable();
   } catch {
     state.weather = null;
-    setVerdictMessage("idle", "Serwis pogodowy chwilowo nie odpowiada. Spróbuj ponownie za moment.");
+    setVerdictMessage("idle", t.weatherDown);
   }
 }
 
@@ -175,20 +175,8 @@ function renderDirection() {
   document.querySelectorAll(".toggle__option").forEach((button) => {
     button.setAttribute("aria-pressed", String(button.dataset.direction === state.direction));
   });
-  $("verdict-question").textContent =
-    state.direction === "winter" ? "Czas na zimówki?" : "Czas na letnie opony?";
+  $("verdict-question").textContent = t.question[state.direction];
 }
-
-const EXPLANATIONS = {
-  winter: {
-    yes: (t) => `Średnia z ostatnich 7 dni to ${t}. Zimno się zrobiło na dobre – zakładaj zimowe.`,
-    no: (t) => `Średnia z ostatnich 7 dni to ${t}. Letnie opony jeszcze dadzą radę.`,
-  },
-  summer: {
-    yes: (t) => `Średnia z ostatnich 7 dni to ${t}. Ciepło wróciło – możesz zakładać letnie.`,
-    no: (t) => `Średnia z ostatnich 7 dni to ${t}. Zostań jeszcze na zimowych.`,
-  },
-};
 
 function render() {
   renderDirection();
@@ -197,7 +185,7 @@ function render() {
   const { dailyMeans, todayIndex } = state.weather;
   const weekly = weeklyMean(dailyMeans, todayIndex);
   if (weekly === null) {
-    setVerdictMessage("idle", "Brakuje danych z ostatnich dni dla tej lokalizacji. Spróbuj innej miejscowości.");
+    setVerdictMessage("idle", t.noData);
     return;
   }
 
@@ -209,16 +197,16 @@ function render() {
 
   const verdictEl = $("verdict");
   verdictEl.dataset.state = isTime ? `yes-${state.direction}` : "no";
-  $("verdict-answer").textContent = isTime ? "TAK" : "NIE";
-  $("verdict-explanation").textContent = EXPLANATIONS[state.direction][isTime ? "yes" : "no"](formatTemp(weekly));
+  $("verdict-answer").textContent = isTime ? t.yes : t.no;
+  $("verdict-explanation").textContent = t.explanations[state.direction][isTime ? "yes" : "no"](formatTemp(weekly));
   $("verdict-near").hidden = !nearThreshold;
   if (sceneChanged) state.quip = pickQuip(sceneName);
-  $("quip").textContent = `„${state.quip}”`;
+  $("quip").textContent = t.quote(state.quip);
   $("quip").hidden = false;
 
   const forecastMean = mean(dailyMeans.slice(todayIndex + 1, todayIndex + 1 + WEEK_DAYS));
   $("verdict-forecast").textContent =
-    forecastMean === null ? "" : `Prognoza na kolejny tydzień: średnio ${formatTemp(forecastMean)}`;
+    forecastMean === null ? "" : t.forecast(formatTemp(forecastMean));
   $("verdict-actions").hidden = false;
 
   renderGauge(weekly);
@@ -276,12 +264,8 @@ function seasonalIsTime() {
 
 function alertPitch() {
   const winter = defaultDirection() === "winter";
-  const when = seasonalIsTime()
-    ? winter
-      ? "Na zimówki już czas – odezwiemy się wiosną, gdy pora będzie na letnie."
-      : "Na letnie już czas – odezwiemy się jesienią, gdy pora będzie na zimówki."
-    : `Jedno powiadomienie, gdy średnia z 7 dni ${winter ? "spadnie do" : "przekroczy"} ${THRESHOLD_C}°C.`;
-  return `${when} Zapamiętamy tylko okolicę (~25 km).`;
+  const when = seasonalIsTime() ? (winter ? t.alreadyWinter : t.alreadySummer) : t.pitch(winter, THRESHOLD_C);
+  return `${when} ${t.areaOnly}`;
 }
 
 async function renderAlerts() {
@@ -296,8 +280,7 @@ async function renderAlerts() {
   box.hidden = false;
   if (alertsSupport === "ios-install") {
     on.hidden = off.hidden = true;
-    note.textContent =
-      "🔔 Chcesz powiadomienie, gdy przyjdzie czas? Na iPhonie dodaj stronę do ekranu początkowego (Udostępnij → „Do ekranu początkowego”) i otwórz ją stamtąd.";
+    note.textContent = t.iosAlerts;
     return;
   }
 
@@ -310,7 +293,7 @@ async function renderAlerts() {
   }
   if (status === "denied") {
     on.hidden = off.hidden = true;
-    note.textContent = "Powiadomienia są zablokowane w ustawieniach przeglądarki.";
+    note.textContent = t.alertsDenied;
     return;
   }
 
@@ -318,10 +301,10 @@ async function renderAlerts() {
   off.hidden = !status;
   on.hidden = status?.name === here;
   if (status?.name === here) {
-    note.textContent = `🔔 Powiadomienia włączone dla: ${here}. Odezwiemy się raz w sezonie, gdy przyjdzie czas.`;
+    note.textContent = t.alertsOnFor(here);
   } else {
-    on.textContent = status ? `🔔 Przenieś powiadomienia na: ${here}` : "🔔 Powiadom mnie, gdy przyjdzie czas";
-    note.textContent = status?.name ? `Teraz powiadomienia są ustawione dla: ${status.name}.` : alertPitch();
+    on.textContent = status ? t.moveAlertsTo(here) : t.notifyMe;
+    note.textContent = status?.name ? t.alertsSetFor(status.name) : alertPitch();
   }
 }
 
@@ -339,13 +322,9 @@ function enableAlerts() {
   return withAlertsBusy(async () => {
     try {
       await subscribeAlert(state.location, seasonalIsTime());
-      showToast("🔔 Gotowe! Damy znać, gdy przyjdzie czas.");
+      showToast(t.alertsEnabled);
     } catch (error) {
-      showToast(
-        error.message === "permission"
-          ? "Bez zgody na powiadomienia nie damy rady 🤷"
-          : "Nie udało się włączyć powiadomień. Spróbuj ponownie.",
-      );
+      showToast(error.message === "permission" ? t.permissionNeeded : t.enableFailed);
     }
   });
 }
@@ -354,9 +333,9 @@ function disableAlerts() {
   return withAlertsBusy(async () => {
     try {
       await unsubscribeAlert();
-      showToast("🔕 Powiadomienia wyłączone.");
+      showToast(t.alertsDisabled);
     } catch {
-      showToast("Nie udało się wyłączyć powiadomień. Spróbuj ponownie.");
+      showToast(t.disableFailed);
     }
   });
 }
@@ -365,12 +344,11 @@ function disableAlerts() {
 
 function shareText() {
   const url = location.origin + location.pathname;
-  if (!state.result || !state.location) return { text: "Czy to już czas na zmianę opon? Sprawdź u siebie:", url };
+  if (!state.result || !state.location) return { text: t.shareInvite, url };
   const { isTime, weekly } = state.result;
-  const question = state.direction === "winter" ? "Czas na zimówki?" : "Czas na letnie opony?";
   const icon = isTime ? (state.direction === "winter" ? "❄️" : "☀️") : "🙅";
   return {
-    text: `${question} ${isTime ? "TAK" : "NIE"} ${icon} (${state.location.name}: średnio ${formatTemp(weekly)} z ostatnich 7 dni). Sprawdź u siebie:`,
+    text: t.shareResult(t.question[state.direction], isTime ? t.yes : t.no, icon, state.location.name, formatTemp(weekly)),
     url,
   };
 }
@@ -387,19 +365,19 @@ async function share() {
   }
   try {
     await navigator.clipboard.writeText(`${text} ${url}`);
-    showToast("Skopiowano! Wklej znajomym, niech też sprawdzą 🚗");
+    showToast(t.copied);
   } catch {
     showToast(url);
   }
 }
 
 let toastTimer = null;
-function showToast(message) {
+function showToast(message, duration = 3200) {
   const toast = $("toast");
   toast.textContent = message;
   toast.classList.add("is-visible");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 3200);
+  toastTimer = setTimeout(() => toast.classList.remove("is-visible"), duration);
 }
 
 // ---------- Chart & table ----------
@@ -407,11 +385,11 @@ function showToast(message) {
 function labelFor(isoDate) {
   const [y, m, d] = isoDate.split("-").map(Number);
   const date = new Date(y, m - 1, d);
-  return `${WEEKDAYS[date.getDay()]} ${String(d).padStart(2, "0")}.${String(m).padStart(2, "0")}`;
+  return `${t.weekdays[date.getDay()]} ${String(d).padStart(2, "0")}.${String(m).padStart(2, "0")}`;
 }
 
 function dayLabel(i, todayIndex, date) {
-  const suffix = i === todayIndex ? " (dziś)" : i > todayIndex ? " (prognoza)" : "";
+  const suffix = i === todayIndex ? t.todaySuffix : i > todayIndex ? t.forecastSuffix : "";
   return labelFor(date) + suffix;
 }
 
@@ -454,7 +432,7 @@ const backgroundPlugin = {
     ctx.fillStyle = opts.labelColor;
     ctx.font = "500 12px Inter, system-ui, sans-serif";
     ctx.textBaseline = "top";
-    ctx.fillText("prognoza →", xForecast + 8, area.top + 8);
+    ctx.fillText(t.forecastZone, xForecast + 8, area.top + 8);
 
     if (yThreshold > area.top && yThreshold < area.bottom) {
       ctx.strokeStyle = opts.thresholdColor;
@@ -468,7 +446,7 @@ const backgroundPlugin = {
       ctx.fillStyle = opts.thresholdColor;
       ctx.textBaseline = "bottom";
       ctx.font = "600 12px Inter, system-ui, sans-serif";
-      ctx.fillText(`próg ${THRESHOLD_C}°C`, area.left + 8, yThreshold - 4);
+      ctx.fillText(t.threshold(THRESHOLD_C), area.left + 8, yThreshold - 4);
     }
     ctx.restore();
   },
@@ -495,7 +473,7 @@ function renderChart() {
       labels: dates.map(labelFor),
       datasets: [
         {
-          label: "Średnia 7-dniowa",
+          label: t.weeklyMean,
           data: rolling,
           borderColor: colors.weekly,
           backgroundColor: colors.weekly,
@@ -508,7 +486,7 @@ function renderChart() {
           segment: { borderDash: (ctx) => (isForecast(ctx) ? [6, 4] : undefined) },
         },
         {
-          label: "Średnia dobowa",
+          label: t.dailyMean,
           data: dailyMeans,
           borderColor: colors.daily,
           backgroundColor: colors.daily,
@@ -599,11 +577,11 @@ async function onSearchSubmit(event) {
   event.preventDefault();
   const query = $("search-input").value.trim();
   const list = $("search-results");
-  list.replaceChildren(statusItem("Szukam…"));
+  list.replaceChildren(statusItem(t.searching));
   try {
     const cities = await searchCities(query);
     if (cities.length === 0) {
-      list.replaceChildren(statusItem("Nic nie znaleziono. Może literówka?"));
+      list.replaceChildren(statusItem(t.noResults));
       return;
     }
     list.replaceChildren(
@@ -628,7 +606,7 @@ async function onSearchSubmit(event) {
       }),
     );
   } catch {
-    list.replaceChildren(statusItem("Wyszukiwanie nie działa. Spróbuj ponownie."));
+    list.replaceChildren(statusItem(t.searchFailed));
   }
 }
 
@@ -643,7 +621,7 @@ document.querySelectorAll(".toggle__option").forEach((button) => {
 });
 
 $("change-location").addEventListener("click", () => {
-  if ($("search").hidden) showSearch("Wpisz nazwę miejscowości.");
+  if ($("search").hidden) showSearch(t.searchHint);
   else hideSearch();
 });
 $("search-form").addEventListener("submit", onSearchSubmit);
@@ -654,7 +632,7 @@ $("use-geolocation").addEventListener("click", () => {
 $("quip").addEventListener("click", () => {
   if (!state.result) return;
   state.quip = pickQuip(state.result.scene, state.quip);
-  $("quip").textContent = `„${state.quip}”`;
+  $("quip").textContent = t.quote(state.quip);
   replayAnimation($("quip"), "is-swapped");
 });
 $("share-main").addEventListener("click", share);
@@ -662,10 +640,32 @@ $("share-top").addEventListener("click", share);
 $("alerts-on").addEventListener("click", enableAlerts);
 $("alerts-off").addEventListener("click", disableAlerts);
 
+// ---------- Install as an app ----------
+
+let installPrompt = null; // Chrome/Edge/Samsung Internet hand us the native install dialog
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  installPrompt = event;
+  $("install").hidden = false;
+});
+window.addEventListener("appinstalled", () => ($("install").hidden = true));
+if (isIos() && !isStandalone()) $("install").hidden = false; // Safari has no install API, only the Share menu
+$("install").addEventListener("click", async () => {
+  if (!installPrompt) {
+    showToast(t.installIos, 8000);
+    return;
+  }
+  installPrompt.prompt();
+  await installPrompt.userChoice;
+  installPrompt = null;
+  $("install").hidden = true;
+});
+
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
   if (state.weather) renderChart();
 });
 
+translatePage();
 renderDirection();
 const storedCity = loadStoredCity();
 if (storedCity) showLocation(storedCity);
