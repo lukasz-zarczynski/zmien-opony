@@ -17,6 +17,8 @@
   <meta property="og:locale" content="pl_PL">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap">
@@ -114,6 +116,11 @@
             Wyślij znajomym
           </button>
           <p class="verdict__forecast" id="verdict-forecast"></p>
+          <div class="alerts" id="alerts" hidden>
+            <button type="button" class="button button--secondary" id="alerts-on"></button>
+            <p class="alerts__note" id="alerts-note"></p>
+            <button type="button" class="text-button" id="alerts-off" hidden>Wyłącz powiadomienia</button>
+          </div>
         </div>
       </div>
     </section>
@@ -146,7 +153,7 @@
       </article>
       <article class="card fact">
         <p class="fact__big">0 kont</p>
-        <p>Bez logowania i bez serwera. Lokalizację wysyłamy tylko do serwisu pogodowego.</p>
+        <p>Bez logowania. Lokalizację wysyłamy tylko do serwisu pogodowego. Jeśli włączysz powiadomienia, zapamiętamy jedynie okolicę (~25 km).</p>
       </article>
     </section>
 

@@ -1,12 +1,14 @@
 {
   "globalHeaders": {
-    "Content-Security-Policy": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com https://api.bigdatacloud.net https://cloudflareinsights.com; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+    "Content-Security-Policy": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com https://api.bigdatacloud.net https://cloudflareinsights.com https://api.zmienopony.com; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
     "Permissions-Policy": "geolocation=(self), camera=(), microphone=()",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "X-Content-Type-Options": "nosniff"
   },
   "routes": [
     { "route": "/README.md", "statusCode": 404 },
-    { "route": "/GLOSSARY.md", "statusCode": 404 }
+    { "route": "/GLOSSARY.md", "statusCode": 404 },
+    { "route": "/worker/*", "statusCode": 404 },
+    { "route": "/sw.js", "headers": { "Cache-Control": "no-cache" } }
   ]
 }

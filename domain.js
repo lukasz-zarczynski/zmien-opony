@@ -10,6 +10,12 @@ export function defaultDirection(date = new Date()) {
   return month >= 7 || month === 0 ? "winter" : "summer";
 }
 
+/** Season key, e.g. "2026-winter" for Aug 2026–Jan 2027. A Season Alert goes out at most once per Season. */
+export function seasonKey(date = new Date()) {
+  const year = date.getMonth() === 0 ? date.getFullYear() - 1 : date.getFullYear();
+  return `${year}-${defaultDirection(date)}`;
+}
+
 export function mean(values) {
   const known = values.filter((v) => typeof v === "number");
   if (known.length === 0) return null;

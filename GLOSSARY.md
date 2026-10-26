@@ -26,4 +26,10 @@ Expected Daily Mean Temperatures for the coming days. Shown for context only; it
 ## Lokalizacja (Location)
 The place the Verdict is computed for. It comes from the browser's geolocation or from a city the user picked.
 
+## Sezon (Season)
+One calendar Change Direction in one year: Aug–Jan is the winter Season (e.g. "2026-winter" runs Aug 2026–Jan 2027), Feb–Jul is the summer Season.
+
+## Powiadomienie (Season Alert)
+A Web Push notification sent at most once per Season, when the Verdict for the Season's Change Direction becomes YES at the subscriber's Location. Users who sign up while it is already YES get their first alert in the next Season. The toggle on the page does not affect alerts.
+
 _Out of scope: all-season tires (opony całoroczne)._

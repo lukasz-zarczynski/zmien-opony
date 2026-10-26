@@ -1,0 +1,19 @@
+{
+  "name": "zmienopony-alerts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --test-scheduled",
+    "deploy": "wrangler deploy",
+    "db:init": "wrangler d1 execute zmienopony-alerts --remote --file schema.sql",
+    "db:init:local": "wrangler d1 execute zmienopony-alerts --local --file schema.sql",
+    "vapid": "node scripts/generate-vapid-keys.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.152.0"
+  },
+  "allowScripts": {
+    "workerd@1.20261019.1": true,
+    "esbuild@0.28.2": true
+  }
+}

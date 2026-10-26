@@ -8,6 +8,7 @@ import {
   weeklyMean,
 } from "./domain.js";
 import { pickQuip } from "./messages.js";
+import { alertStatus, alertSupport, subscribeAlert, unsubscribeAlert } from "./notify.js";
 import { createScene } from "./scene.js";
 
 const PAST_DAYS = 14;
@@ -221,6 +222,7 @@ function render() {
   $("verdict-actions").hidden = false;
 
   renderGauge(weekly);
+  renderAlerts();
   replayAnimation(verdictEl, "is-revealed");
 }
 
@@ -261,6 +263,102 @@ function renderGauge(weekly) {
     if (t < 1) requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
+}
+
+// ---------- Season Alerts ----------
+
+const alertsSupport = alertSupport();
+
+/** Season Alerts follow the calendar's Change Direction, not the toggle. */
+function seasonalIsTime() {
+  return verdict(defaultDirection(), state.result.weekly).isTime;
+}
+
+function alertPitch() {
+  const winter = defaultDirection() === "winter";
+  const when = seasonalIsTime()
+    ? winter
+      ? "Na zimówki już czas – odezwiemy się wiosną, gdy pora będzie na letnie."
+      : "Na letnie już czas – odezwiemy się jesienią, gdy pora będzie na zimówki."
+    : `Jedno powiadomienie, gdy średnia z 7 dni ${winter ? "spadnie do" : "przekroczy"} ${THRESHOLD_C}°C.`;
+  return `${when} Zapamiętamy tylko okolicę (~25 km).`;
+}
+
+async function renderAlerts() {
+  const box = $("alerts");
+  const on = $("alerts-on");
+  const off = $("alerts-off");
+  const note = $("alerts-note");
+  if (alertsSupport === "unsupported" || !state.result) {
+    box.hidden = true;
+    return;
+  }
+  box.hidden = false;
+  if (alertsSupport === "ios-install") {
+    on.hidden = off.hidden = true;
+    note.textContent =
+      "🔔 Chcesz powiadomienie, gdy przyjdzie czas? Na iPhonie dodaj stronę do ekranu początkowego (Udostępnij → „Do ekranu początkowego”) i otwórz ją stamtąd.";
+    return;
+  }
+
+  let status;
+  try {
+    status = await alertStatus();
+  } catch {
+    box.hidden = true;
+    return;
+  }
+  if (status === "denied") {
+    on.hidden = off.hidden = true;
+    note.textContent = "Powiadomienia są zablokowane w ustawieniach przeglądarki.";
+    return;
+  }
+
+  const here = state.location.name;
+  off.hidden = !status;
+  on.hidden = status?.name === here;
+  if (status?.name === here) {
+    note.textContent = `🔔 Powiadomienia włączone dla: ${here}. Odezwiemy się raz w sezonie, gdy przyjdzie czas.`;
+  } else {
+    on.textContent = status ? `🔔 Przenieś powiadomienia na: ${here}` : "🔔 Powiadom mnie, gdy przyjdzie czas";
+    note.textContent = status?.name ? `Teraz powiadomienia są ustawione dla: ${status.name}.` : alertPitch();
+  }
+}
+
+async function withAlertsBusy(action) {
+  $("alerts-on").disabled = $("alerts-off").disabled = true;
+  try {
+    await action();
+  } finally {
+    $("alerts-on").disabled = $("alerts-off").disabled = false;
+    renderAlerts();
+  }
+}
+
+function enableAlerts() {
+  return withAlertsBusy(async () => {
+    try {
+      await subscribeAlert(state.location, seasonalIsTime());
+      showToast("🔔 Gotowe! Damy znać, gdy przyjdzie czas.");
+    } catch (error) {
+      showToast(
+        error.message === "permission"
+          ? "Bez zgody na powiadomienia nie damy rady 🤷"
+          : "Nie udało się włączyć powiadomień. Spróbuj ponownie.",
+      );
+    }
+  });
+}
+
+function disableAlerts() {
+  return withAlertsBusy(async () => {
+    try {
+      await unsubscribeAlert();
+      showToast("🔕 Powiadomienia wyłączone.");
+    } catch {
+      showToast("Nie udało się wyłączyć powiadomień. Spróbuj ponownie.");
+    }
+  });
 }
 
 // ---------- Sharing ----------
@@ -561,6 +659,8 @@ $("quip").addEventListener("click", () => {
 });
 $("share-main").addEventListener("click", share);
 $("share-top").addEventListener("click", share);
+$("alerts-on").addEventListener("click", enableAlerts);
+$("alerts-off").addEventListener("click", disableAlerts);
 
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
   if (state.weather) renderChart();
