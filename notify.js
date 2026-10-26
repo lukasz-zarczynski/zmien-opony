@@ -5,9 +5,9 @@ const ALERTS_API = "https://api.zmienopony.com";
 const VAPID_PUBLIC_KEY = "BOj1abKmqWAAVDg8LX0_Hj4Rtl71eNy1L34tm09AxfYoQ27HEnDofCNGvcd00-x7DNLzoolpMDuLP2Z3y8inaFU";
 const ALERT_STORAGE_KEY = "zmienopony.alert"; // { name } of the subscribed Location
 
-const isIos = () =>
+export const isIos = () =>
   /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+export const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
 
 /** "supported", "ios-install" (Safari only allows push from a home-screen app) or "unsupported". */
 export function alertSupport() {

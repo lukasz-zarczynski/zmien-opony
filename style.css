@@ -271,6 +271,11 @@ body[data-scene="sun"] .sun {
   letter-spacing: -0.03em;
 }
 
+.topbar__actions {
+  display: flex;
+  gap: 8px;
+}
+
 .icon-button {
   display: grid;
   place-items: center;
