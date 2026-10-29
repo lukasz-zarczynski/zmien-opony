@@ -356,7 +356,7 @@ body[data-scene="sun"] .sun {
 
 .toggle {
   display: inline-grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, auto);
   gap: 4px;
   padding: 4px;
   border-radius: 999px;
@@ -858,6 +858,27 @@ body[data-scene="sun"] .sun {
 
   .hero__controls {
     justify-content: center;
+  }
+
+  .toggle__option {
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+}
+
+/* Three options don't fit one line on small phones: share the width and let labels wrap. */
+@media (max-width: 400px) {
+  .toggle {
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    border-radius: 16px;
+  }
+
+  .toggle__option {
+    padding: 6px 4px;
+    border-radius: 12px;
+    line-height: 1.25;
+    white-space: normal;
   }
 }
 

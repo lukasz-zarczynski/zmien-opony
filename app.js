@@ -153,6 +153,7 @@ async function showLocation(location) {
 // ---------- Verdict ----------
 
 function sceneFor(direction, isTime) {
+  if (direction === "allseason") return "calm"; // the "calm" quips are the all-season ones
   if (isTime) return direction === "winter" ? "snow" : "sun";
   return direction === "winter" ? "leaves" : "rain";
 }
@@ -273,7 +274,7 @@ async function renderAlerts() {
   const on = $("alerts-on");
   const off = $("alerts-off");
   const note = $("alerts-note");
-  if (alertsSupport === "unsupported" || !state.result) {
+  if (alertsSupport === "unsupported" || !state.result || state.direction === "allseason") {
     box.hidden = true;
     return;
   }
