@@ -3,6 +3,13 @@
 import { lang } from "./i18n.js";
 
 const QUIPS_PL = {
+  calm: [
+    "Ty i wulkanizator widujecie się tylko przy przeglądzie. I dobrze.",
+    "Kolejka do wulkanizatora? Znasz ją tylko z wiadomości.",
+    "Śnieg, upał, grad – Twoje opony wzruszają ramionami.",
+    "Inni dzwonią po termin do wulkanizatora. Ty – po pizzę.",
+    "Zimówki w piwnicy? U Ciebie w piwnicy są tylko przetwory.",
+  ],
   snow: [
     "Zima nie pyta, czy masz już termin u wulkanizatora.",
     "Letnie opony na zimnym asfalcie to jak klapki na Kasprowym.",
@@ -35,6 +42,13 @@ const QUIPS_PL = {
 };
 
 const QUIPS_EN = {
+  calm: [
+    "You and the tire shop only meet at your annual service. As it should be.",
+    "The queue at the tire shop? You've only heard about it on the news.",
+    "Snow, heatwave, hail – your tires just shrug.",
+    "Everyone else is booking a tire change. You're booking brunch.",
+    "Winter tires in the basement? Your basement has room for a ping-pong table.",
+  ],
   snow: [
     "Winter doesn't care whether you've booked the tire shop yet.",
     "Summer tires on cold asphalt are like flip-flops on a ski slope.",

@@ -10,7 +10,7 @@ The average air temperature over one whole calendar day at the user's location.
 The mean of the Daily Mean Temperatures of the last 7 complete days, ending yesterday. It is the only input to the Verdict.
 
 ## Kierunek zmiany (Change Direction)
-Which swap the page asks about: "na zimowe" (summer → winter) or "na letnie" (winter → summer). It is inferred from the calendar (Aug–Jan → na zimowe, Feb–Jul → na letnie) and the user can flip it.
+Which swap the page asks about: "na zimowe" (summer → winter) or "na letnie" (winter → summer). It is inferred from the calendar (Aug–Jan → na zimowe, Feb–Jul → na letnie) and the user can flip it. A third, joke option "całoroczne" (all-season tires) always gets NO and hides Season Alerts.
 
 ## Werdykt (Verdict)
 The YES/NO answer to "is it time to change tires in the current Change Direction?".
@@ -32,4 +32,3 @@ One calendar Change Direction in one year: Aug–Jan is the winter Season (e.g. 
 ## Powiadomienie (Season Alert)
 A Web Push notification sent at most once per Season, when the Verdict for the Season's Change Direction becomes YES at the subscriber's Location. Users who sign up while it is already YES get their first alert in the next Season. The toggle on the page does not affect alerts.
 
-_Out of scope: all-season tires (opony całoroczne)._

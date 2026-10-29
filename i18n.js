@@ -17,7 +17,7 @@ const TEXT = {
     fetchedAt: (time) => ` · pobrano ${time}`,
     weatherDown: "Serwis pogodowy chwilowo nie odpowiada. Spróbuj ponownie za moment.",
     noData: "Brakuje danych z ostatnich dni dla tej lokalizacji. Spróbuj innej miejscowości.",
-    question: { winter: "Czas na zimówki?", summer: "Czas na letnie opony?" },
+    question: { winter: "Czas na zimówki?", summer: "Czas na letnie opony?", allseason: "Czas zmienić całoroczne?" },
     yes: "TAK",
     no: "NIE",
     explanations: {
@@ -28,6 +28,9 @@ const TEXT = {
       summer: {
         yes: (t) => `Średnia z ostatnich 7 dni to ${t}. Ciepło wróciło – możesz zakładać letnie.`,
         no: (t) => `Średnia z ostatnich 7 dni to ${t}. Zostań jeszcze na zimowych.`,
+      },
+      allseason: {
+        no: (t) => `Średnia z ostatnich 7 dni to ${t}. Zupełnie nas to nie obchodzi – i Ciebie też nie powinno.`,
       },
     },
     quote: (q) => `„${q}”`,
@@ -76,7 +79,7 @@ const TEXT = {
     fetchedAt: (time) => ` · fetched at ${time}`,
     weatherDown: "The weather service isn't responding right now. Try again in a moment.",
     noData: "Data for the last few days is missing here. Try another city.",
-    question: { winter: "Time for winter tires?", summer: "Time for summer tires?" },
+    question: { winter: "Time for winter tires?", summer: "Time for summer tires?", allseason: "Time to change your all-season tires?" },
     yes: "YES",
     no: "NO",
     explanations: {
@@ -87,6 +90,9 @@ const TEXT = {
       summer: {
         yes: (t) => `The average of the last 7 days is ${t}. The warmth is back – you can switch to summer tires.`,
         no: (t) => `The average of the last 7 days is ${t}. Stay on winter tires a bit longer.`,
+      },
+      allseason: {
+        no: (t) => `The average of the last 7 days is ${t}. We couldn't care less – and neither should you.`,
       },
     },
     quote: (q) => `“${q}”`,
@@ -139,6 +145,7 @@ const STATIC_EN = {
   direction: "Change direction",
   toWinter: "❄️ To winter",
   toSummer: "☀️ To summer",
+  allSeasonOption: "🌦️ All-season",
   city: "City",
   cityExample: "e.g. London, Berlin, Toronto",
   search: "Search",
@@ -163,7 +170,7 @@ const STATIC_EN = {
   fact3Big: "0 accounts",
   fact3:
     "No sign-up. Your location goes only to the weather service. If you turn on notifications, we only remember your area (~25 km).",
-  allSeason: "All-season tires? Congratulations, this page isn't for you. 😎",
+  allSeason: "All-season tires? Tap “🌦️ All-season” – we have an answer no weather can change. 😎",
   disclaimer: "The forecast is for context only and doesn't affect the answer. The decision is yours anyway – and your tire shop's.",
   weatherData: "Weather data:",
   ideaCode: "Idea and code:",

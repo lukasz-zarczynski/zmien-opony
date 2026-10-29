@@ -40,6 +40,7 @@ export function rollingWeeklyMeans(dailyMeans) {
 }
 
 export function verdict(direction, weeklyMeanC) {
+  if (direction === "allseason") return { isTime: false, nearThreshold: false }; // that's the whole point of them
   const isTime = direction === "winter" ? weeklyMeanC <= THRESHOLD_C : weeklyMeanC > THRESHOLD_C;
   const nearThreshold = Math.abs(weeklyMeanC - THRESHOLD_C) <= NEAR_THRESHOLD_MARGIN_C;
   return { isTime, nearThreshold };
