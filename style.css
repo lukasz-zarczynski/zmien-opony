@@ -866,6 +866,22 @@ body[data-scene="sun"] .sun {
   }
 }
 
+/* Three options don't fit one line on small phones: share the width and let labels wrap. */
+@media (max-width: 400px) {
+  .toggle {
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    border-radius: 16px;
+  }
+
+  .toggle__option {
+    padding: 6px 4px;
+    border-radius: 12px;
+    line-height: 1.25;
+    white-space: normal;
+  }
+}
+
 /* ---------- Footer & toast ---------- */
 
 .footer {
