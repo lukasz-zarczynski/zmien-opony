@@ -754,12 +754,11 @@ body[data-scene="sun"] .sun {
 .shops {
   width: 100%;
   max-width: 560px;
-  font-size: 14px;
+  text-align: center;
 }
 
-.shops summary {
-  cursor: pointer;
-  color: var(--text-secondary);
+.shops summary::-webkit-details-marker {
+  display: none; /* Safari keeps the triangle on non-list-item summaries */
 }
 
 .shops iframe {
