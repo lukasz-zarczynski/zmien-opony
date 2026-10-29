@@ -124,6 +124,10 @@
             <span data-i18n="sendFriends">Wyślij znajomym</span>
           </button>
           <p class="verdict__forecast" id="verdict-forecast"></p>
+          <details class="shops" id="shops" hidden>
+            <summary data-i18n="shops">🔧 Pokaż wulkanizacje w okolicy (Google Maps)</summary>
+            <iframe id="shops-map" title="Mapa wulkanizacji w okolicy" data-i18n-title="shopsMap" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </details>
           <div class="alerts" id="alerts" hidden>
             <button type="button" class="button button--secondary" id="alerts-on"></button>
             <p class="alerts__note" id="alerts-note"></p>
@@ -161,7 +165,7 @@
       </article>
       <article class="card fact">
         <p class="fact__big" data-i18n="fact3Big">0 kont</p>
-        <p data-i18n="fact3">Bez logowania. Lokalizację wysyłamy tylko do serwisu pogodowego. Jeśli włączysz powiadomienia, zapamiętamy jedynie okolicę (~25 km).</p>
+        <p data-i18n="fact3">Bez logowania. Lokalizację wysyłamy tylko do serwisu pogodowego (i do Google Maps, jeśli otworzysz mapę wulkanizacji). Jeśli włączysz powiadomienia, zapamiętamy jedynie okolicę (~25 km).</p>
       </article>
     </section>
 

@@ -210,6 +210,8 @@ function render() {
     forecastMean === null ? "" : t.forecast(formatTemp(forecastMean));
   $("verdict-actions").hidden = false;
 
+  $("shops").hidden = !isTime;
+  renderShops();
   renderGauge(weekly);
   renderAlerts();
   replayAnimation(verdictEl, "is-revealed");
@@ -252,6 +254,19 @@ function renderGauge(weekly) {
     if (t < 1) requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
+}
+
+// ---------- Tire shops map ----------
+
+/** Loads the map only once the user opens it, so the location reaches Google only on request. */
+function renderShops() {
+  const map = $("shops-map");
+  if (!$("shops").open || !state.location) return;
+  // Keyless Google Maps embed: free, no API key or billing.
+  const { latitude, longitude } = state.location;
+  const params = new URLSearchParams({ q: t.shopQuery, ll: `${latitude},${longitude}`, z: 12, hl: lang, output: "embed" });
+  const url = `https://maps.google.com/maps?${params}`;
+  if (map.getAttribute("src") !== url) map.src = url; // re-assigning the same src would reload it
 }
 
 // ---------- Season Alerts ----------
@@ -636,6 +651,7 @@ $("quip").addEventListener("click", () => {
   $("quip").textContent = t.quote(state.quip);
   replayAnimation($("quip"), "is-swapped");
 });
+$("shops").addEventListener("toggle", renderShops);
 $("share-main").addEventListener("click", share);
 $("share-top").addEventListener("click", share);
 $("alerts-on").addEventListener("click", enableAlerts);

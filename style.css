@@ -751,6 +751,26 @@ body[data-scene="sun"] .sun {
   cursor: progress;
 }
 
+.shops {
+  width: 100%;
+  max-width: 560px;
+  font-size: 14px;
+}
+
+.shops summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.shops iframe {
+  display: block;
+  width: 100%;
+  height: 320px;
+  margin-top: 10px;
+  border: 0;
+  border-radius: var(--radius-md);
+}
+
 .alerts {
   display: flex;
   flex-direction: column;
