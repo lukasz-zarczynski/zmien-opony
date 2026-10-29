@@ -35,6 +35,7 @@ const TEXT = {
     },
     quote: (q) => `„${q}”`,
     forecast: (t) => `Prognoza na kolejny tydzień: średnio ${t}`,
+    shopQuery: "wulkanizacja",
     alreadyWinter: "Na zimówki już czas – odezwiemy się wiosną, gdy pora będzie na letnie.",
     alreadySummer: "Na letnie już czas – odezwiemy się jesienią, gdy pora będzie na zimówki.",
     pitch: (winter, threshold) =>
@@ -97,6 +98,7 @@ const TEXT = {
     },
     quote: (q) => `“${q}”`,
     forecast: (t) => `Forecast for next week: ${t} on average`,
+    shopQuery: "tire shop",
     alreadyWinter: "It's already winter-tire time – we'll get in touch in spring, when it's time for summer tires.",
     alreadySummer: "It's already summer-tire time – we'll get in touch in autumn, when it's time for winter tires.",
     pitch: (winter, threshold) =>
@@ -156,6 +158,8 @@ const STATIC_EN = {
   nextQuip: "Click for another one",
   sendFriends: "Send to friends",
   alertsOff: "Turn off notifications",
+  shops: "🔧 Show tire shops nearby (Google Maps)",
+  shopsMap: "Map of tire shops nearby",
   chartTitle: "Past and future",
   chartIntro: "Daily average temperature: the last 14 days and a 7-day forecast.",
   chartLabel: "Chart of the daily average temperature against the 7°C threshold",
@@ -169,7 +173,7 @@ const STATIC_EN = {
   fact2: "We average the last week (not counting today), so one frosty morning doesn't cause panic.",
   fact3Big: "0 accounts",
   fact3:
-    "No sign-up. Your location goes only to the weather service. If you turn on notifications, we only remember your area (~25 km).",
+    "No sign-up. Your location goes only to the weather service (and to Google Maps if you open the tire shop map). If you turn on notifications, we only remember your area (~25 km).",
   allSeason: "All-season tires? Tap “🌦️ All-season” – we have an answer no weather can change. 😎",
   disclaimer: "The forecast is for context only and doesn't affect the answer. The decision is yours anyway – and your tire shop's.",
   weatherData: "Weather data:",
