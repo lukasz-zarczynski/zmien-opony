@@ -24,7 +24,7 @@ The Weekly Mean is within ±1°C of the Threshold Temperature. The Verdict stays
 Expected Daily Mean Temperatures for the coming days. Shown for context only; it never affects the Verdict.
 
 ## Lokalizacja (Location)
-The place the Verdict is computed for. It comes from the browser's geolocation or from a city the user picked.
+The place the Verdict is computed for. It comes from the browser's geolocation or from a city the user picked. Weather is always fetched for the Location snapped to a 0.05° cell (`toCell` in domain.js), so the page and Season Alerts judge the same point.
 
 ## Sezon (Season)
 One calendar Change Direction in one year: Aug–Jan is the winter Season (e.g. "2026-winter" runs Aug 2026–Jan 2027), Feb–Jul is the summer Season.

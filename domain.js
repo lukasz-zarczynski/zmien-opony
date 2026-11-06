@@ -3,6 +3,10 @@
 export const THRESHOLD_C = 7;
 export const NEAR_THRESHOLD_MARGIN_C = 1;
 export const WEEK_DAYS = 7;
+export const CELL_DEG = 0.05; // ~5.5 km north-south, ~3.5 km east-west in Poland
+
+/** Snaps a coordinate to the cell grid. The page and Season Alerts both use it, so they see the same weather. */
+export const toCell = (value) => Number((Math.round(value / CELL_DEG) * CELL_DEG).toFixed(2));
 
 /** Aug–Jan asks about switching to winter tires, Feb–Jul about switching to summer tires. */
 export function defaultDirection(date = new Date()) {
