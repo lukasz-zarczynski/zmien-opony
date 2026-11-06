@@ -4,6 +4,7 @@ import {
   defaultDirection,
   mean,
   rollingWeeklyMeans,
+  toCell,
   verdict,
   weeklyMean,
 } from "./domain.js";
@@ -64,8 +65,8 @@ async function fetchJson(url) {
 
 async function fetchWeather({ latitude, longitude }) {
   const params = new URLSearchParams({
-    latitude,
-    longitude,
+    latitude: toCell(latitude),
+    longitude: toCell(longitude),
     daily: "temperature_2m_mean",
     past_days: PAST_DAYS,
     forecast_days: FORECAST_DAYS + 1, // +1 because today counts as a forecast day

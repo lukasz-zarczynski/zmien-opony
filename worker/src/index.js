@@ -4,9 +4,8 @@
 // Pushes carry no payload, so no message encryption is needed: the service worker (sw.js)
 // picks the text from the date. That keeps each run well under the free plan's CPU limit.
 
-import { defaultDirection, seasonKey, verdict, weeklyMean } from "../../domain.js";
+import { defaultDirection, seasonKey, toCell, verdict, weeklyMean } from "../../domain.js";
 
-const CELL_DEG = 0.25; // ~28 km north-south, ~17 km east-west in Poland
 const PAST_DAYS = 7;
 const CELLS_PER_WEATHER_CALL = 50; // Open-Meteo accepts a list of coordinates per request
 const MAX_WEATHER_CALLS = 8;
@@ -101,7 +100,7 @@ function roundToCell(value, min, max) {
   if (typeof value !== "number" || !Number.isFinite(value) || value < min || value > max) {
     throw new BadRequest("invalid coordinates");
   }
-  return Math.round(value / CELL_DEG) * CELL_DEG;
+  return toCell(value);
 }
 
 async function subscribe(body, env, cors) {
