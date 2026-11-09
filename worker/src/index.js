@@ -4,13 +4,12 @@
 // Pushes carry no payload, so no message encryption is needed: the service worker (sw.js)
 // picks the text from the date. That keeps each run well under the free plan's CPU limit.
 
-import { defaultDirection, seasonKey, toCell, verdict, weeklyMean } from "../../domain.js";
+import { defaultDirection, seasonKey, toCell, verdict, WEEK_DAYS, weeklyMean } from "../../domain.js";
 
-const PAST_DAYS = 7;
 const CELLS_PER_WEATHER_CALL = 50; // Open-Meteo accepts a list of coordinates per request
 const MAX_WEATHER_CALLS = 8;
 const SUBREQUEST_BUDGET = 48; // free plan allows 50 subrequests per invocation
-const EVALUATE_FROM_UTC_HOUR = 6; // yesterday is complete everywhere in Poland
+const EVALUATE_FROM_UTC_HOUR = 6; // "today" is the same date everywhere in Poland
 const SEND_UTC_HOURS = [7, 19]; // no buzzing phones at night (8:00–21:00 Polish time)
 const MAX_BODY_BYTES = 2048;
 const PUSH_HOSTS = [
@@ -170,15 +169,14 @@ async function fetchWeeklyMeans(cells) {
     latitude: cells.map((c) => c.lat).join(","),
     longitude: cells.map((c) => c.lon).join(","),
     daily: "temperature_2m_mean",
-    past_days: PAST_DAYS,
-    forecast_days: 1,
+    forecast_days: WEEK_DAYS + 1, // +1 because today counts as a forecast day
     timezone: "auto",
   });
   const response = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
   if (!response.ok) throw new Error(`Open-Meteo HTTP ${response.status}`);
   const data = await response.json();
   const locations = Array.isArray(data) ? data : [data];
-  return locations.map((l) => weeklyMean(l.daily.temperature_2m_mean, PAST_DAYS));
+  return locations.map((l) => weeklyMean(l.daily.temperature_2m_mean, 0));
 }
 
 // ---------- Sending ----------

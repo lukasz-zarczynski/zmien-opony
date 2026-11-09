@@ -16,30 +16,29 @@ const TEXT = {
     checking: "Sprawdzam termometry w okolicy…",
     fetchedAt: (time) => ` · pobrano ${time}`,
     weatherDown: "Serwis pogodowy chwilowo nie odpowiada. Spróbuj ponownie za moment.",
-    noData: "Brakuje danych z ostatnich dni dla tej lokalizacji. Spróbuj innej miejscowości.",
+    noData: "Brakuje prognozy na najbliższe dni dla tej lokalizacji. Spróbuj innej miejscowości.",
     question: { winter: "Czas na zimówki?", summer: "Czas na letnie opony?", allseason: "Czas zmienić całoroczne?" },
     yes: "TAK",
     no: "NIE",
     explanations: {
       winter: {
-        yes: (t) => `Średnia z ostatnich 7 dni to ${t}. Zimno się zrobiło na dobre – zakładaj zimowe.`,
-        no: (t) => `Średnia z ostatnich 7 dni to ${t}. Letnie opony jeszcze dadzą radę.`,
+        yes: (t) => `Prognoza na najbliższe 7 dni: średnio ${t}. Idzie zimno – umów wymianę na zimowe.`,
+        no: (t) => `Prognoza na najbliższe 7 dni: średnio ${t}. Letnie opony jeszcze dadzą radę.`,
       },
       summer: {
-        yes: (t) => `Średnia z ostatnich 7 dni to ${t}. Ciepło wróciło – możesz zakładać letnie.`,
-        no: (t) => `Średnia z ostatnich 7 dni to ${t}. Zostań jeszcze na zimowych.`,
+        yes: (t) => `Prognoza na najbliższe 7 dni: średnio ${t}. Idzie ciepło – umów wymianę na letnie.`,
+        no: (t) => `Prognoza na najbliższe 7 dni: średnio ${t}. Zostań jeszcze na zimowych.`,
       },
       allseason: {
-        no: (t) => `Średnia z ostatnich 7 dni to ${t}. Zupełnie nas to nie obchodzi – i Ciebie też nie powinno.`,
+        no: (t) => `Prognoza na najbliższe 7 dni: średnio ${t}. Zupełnie nas to nie obchodzi – i Ciebie też nie powinno.`,
       },
     },
     quote: (q) => `„${q}”`,
-    forecast: (t) => `Prognoza na kolejny tydzień: średnio ${t}`,
     shopQuery: "wulkanizacja",
     alreadyWinter: "Na zimówki już czas – odezwiemy się wiosną, gdy pora będzie na letnie.",
     alreadySummer: "Na letnie już czas – odezwiemy się jesienią, gdy pora będzie na zimówki.",
     pitch: (winter, threshold) =>
-      `Jedno powiadomienie, gdy średnia z 7 dni ${winter ? "spadnie do" : "przekroczy"} ${threshold}°C.`,
+      `Jedno powiadomienie, gdy prognoza na 7 dni ${winter ? "spadnie do" : "przekroczy"} ${threshold}°C – z wyprzedzeniem, żeby zdążyć umówić wulkanizację.`,
     areaOnly: "Zapamiętamy tylko okolicę (~25 km).",
     iosAlerts:
       "🔔 Chcesz powiadomienie, gdy przyjdzie czas? Na iPhonie dodaj stronę do ekranu początkowego (Udostępnij → „Do ekranu początkowego”) i otwórz ją stamtąd.",
@@ -55,7 +54,7 @@ const TEXT = {
     disableFailed: "Nie udało się wyłączyć powiadomień. Spróbuj ponownie.",
     shareInvite: "Czy to już czas na zmianę opon? Sprawdź u siebie:",
     shareResult: (question, answer, icon, place, temp) =>
-      `${question} ${answer} ${icon} (${place}: średnio ${temp} z ostatnich 7 dni). Sprawdź u siebie:`,
+      `${question} ${answer} ${icon} (${place}: prognoza na 7 dni średnio ${temp}). Sprawdź u siebie:`,
     copied: "Skopiowano! Wklej znajomym, niech też sprawdzą 🚗",
     installIos: "📲 Stuknij Udostępnij, a potem „Do ekranu początkowego”.",
     weekdays: ["nd", "pn", "wt", "śr", "cz", "pt", "sb"],
@@ -79,30 +78,29 @@ const TEXT = {
     checking: "Checking local thermometers…",
     fetchedAt: (time) => ` · fetched at ${time}`,
     weatherDown: "The weather service isn't responding right now. Try again in a moment.",
-    noData: "Data for the last few days is missing here. Try another city.",
+    noData: "The forecast for the coming days is missing here. Try another city.",
     question: { winter: "Time for winter tires?", summer: "Time for summer tires?", allseason: "Time to change your all-season tires?" },
     yes: "YES",
     no: "NO",
     explanations: {
       winter: {
-        yes: (t) => `The average of the last 7 days is ${t}. The cold is here to stay – put on winter tires.`,
-        no: (t) => `The average of the last 7 days is ${t}. Summer tires will still do.`,
+        yes: (t) => `The forecast for the next 7 days averages ${t}. The cold is coming – book your switch to winter tires.`,
+        no: (t) => `The forecast for the next 7 days averages ${t}. Summer tires will still do.`,
       },
       summer: {
-        yes: (t) => `The average of the last 7 days is ${t}. The warmth is back – you can switch to summer tires.`,
-        no: (t) => `The average of the last 7 days is ${t}. Stay on winter tires a bit longer.`,
+        yes: (t) => `The forecast for the next 7 days averages ${t}. The warmth is coming – book your switch to summer tires.`,
+        no: (t) => `The forecast for the next 7 days averages ${t}. Stay on winter tires a bit longer.`,
       },
       allseason: {
-        no: (t) => `The average of the last 7 days is ${t}. We couldn't care less – and neither should you.`,
+        no: (t) => `The forecast for the next 7 days averages ${t}. We couldn't care less – and neither should you.`,
       },
     },
     quote: (q) => `“${q}”`,
-    forecast: (t) => `Forecast for next week: ${t} on average`,
     shopQuery: "tire shop",
     alreadyWinter: "It's already winter-tire time – we'll get in touch in spring, when it's time for summer tires.",
     alreadySummer: "It's already summer-tire time – we'll get in touch in autumn, when it's time for winter tires.",
     pitch: (winter, threshold) =>
-      `One notification when the 7-day average ${winter ? "drops to" : "rises above"} ${threshold}°C.`,
+      `One notification when the 7-day forecast average ${winter ? "drops to" : "rises above"} ${threshold}°C – early enough to book a tire shop.`,
     areaOnly: "We only remember your area (~25 km).",
     iosAlerts:
       "🔔 Want a notification when it's time? On iPhone, add this page to your Home Screen (Share → “Add to Home Screen”) and open it from there.",
@@ -118,7 +116,7 @@ const TEXT = {
     disableFailed: "Couldn't turn off notifications. Try again.",
     shareInvite: "Is it time to change your tires? Check for your area:",
     shareResult: (question, answer, icon, place, temp) =>
-      `${question} ${answer} ${icon} (${place}: ${temp} on average over the last 7 days). Check for your area:`,
+      `${question} ${answer} ${icon} (${place}: ${temp} on average over the next 7 days). Check for your area:`,
     copied: "Copied! Paste it to your friends so they can check too 🚗",
     installIos: "📲 Tap Share, then “Add to Home Screen”.",
     weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -140,7 +138,7 @@ export const t = TEXT[lang];
 const STATIC_EN = {
   title: "Zmień opony – time for winter or summer tires?",
   description:
-    "Find out in 3 seconds whether it's time for winter or summer tires where you are. The 7-day average temperature versus the magic 7°C.",
+    "Find out in 3 seconds whether it's time for winter or summer tires where you are. The 7-day temperature forecast versus the magic 7°C.",
   home: "Zmień opony – home",
   share: "Share",
   install: "Install app",
@@ -170,12 +168,12 @@ const STATIC_EN = {
   howItWorks: "How it works",
   fact1: "Below this temperature, the rubber of summer tires hardens and loses grip. Winter tires are the opposite.",
   fact2Big: "7 days",
-  fact2: "We average the last week (not counting today), so one frosty morning doesn't cause panic.",
+  fact2: "We average the forecast for the next week (from tomorrow), so you have time to book a tire shop before the queues build up.",
   fact3Big: "0 accounts",
   fact3:
     "No sign-up. Your location goes only to the weather service (and to Google Maps if you open the tire shop map). If you turn on notifications, we only remember your area (~25 km).",
   allSeason: "All-season tires? Tap “🌦️ All-season” – we have an answer no weather can change. 😎",
-  disclaimer: "The forecast is for context only and doesn't affect the answer. The decision is yours anyway – and your tire shop's.",
+  disclaimer: "It's only a forecast – the weather likes surprises. The decision is yours anyway – and your tire shop's.",
   weatherData: "Weather data:",
   ideaCode: "Idea and code:",
   openToWork: " · open to new professional challenges.",

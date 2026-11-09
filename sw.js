@@ -7,22 +7,22 @@ const LANG = (self.navigator.language ?? "").toLowerCase().startsWith("pl") ? "p
 const ALERTS_PL = {
   winter: {
     title: "❄️ Czas na zimówki!",
-    body: "Średnia z ostatnich 7 dni w Twojej okolicy spadła do 7°C. Zakładaj zimowe.",
+    body: "Prognoza na najbliższe 7 dni w Twojej okolicy spada do 7°C. Umów wymianę na zimowe.",
   },
   summer: {
     title: "☀️ Czas na letnie opony!",
-    body: "Średnia z ostatnich 7 dni w Twojej okolicy przekroczyła 7°C. Możesz zakładać letnie.",
+    body: "Prognoza na najbliższe 7 dni w Twojej okolicy przekracza 7°C. Umów wymianę na letnie.",
   },
 };
 
 const ALERTS_EN = {
   winter: {
     title: "❄️ Time for winter tires!",
-    body: "The 7-day average in your area has dropped to 7°C. Put on your winter tires.",
+    body: "The 7-day forecast average in your area drops to 7°C. Book your switch to winter tires.",
   },
   summer: {
     title: "☀️ Time for summer tires!",
-    body: "The 7-day average in your area has risen above 7°C. You can switch to summer tires.",
+    body: "The 7-day forecast average in your area rises above 7°C. Book your switch to summer tires.",
   },
 };
 
