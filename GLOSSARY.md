@@ -7,7 +7,7 @@ The average daily temperature, 7°C, that separates winter-tire weather from sum
 The average air temperature over one whole calendar day at the user's location.
 
 ## Średnia tygodniowa (Weekly Mean)
-The mean of the Daily Mean Temperatures of the last 7 complete days, ending yesterday. It is the only input to the Verdict.
+The mean of the forecast Daily Mean Temperatures for the next 7 days, tomorrow through day 7. It is the only input to the Verdict. It looks ahead so people have time to book a tire shop before the queues.
 
 ## Kierunek zmiany (Change Direction)
 Which swap the page asks about: "na zimowe" (summer → winter) or "na letnie" (winter → summer). It is inferred from the calendar (Aug–Jan → na zimowe, Feb–Jul → na letnie) and the user can flip it. A third, joke option "całoroczne" (all-season tires) always gets NO and hides Season Alerts.
@@ -21,7 +21,7 @@ The YES/NO answer to "is it time to change tires in the current Change Direction
 The Weekly Mean is within ±1°C of the Threshold Temperature. The Verdict stays YES/NO, but the user is told it may flip soon.
 
 ## Prognoza (Forecast)
-Expected Daily Mean Temperatures for the coming days. Shown for context only; it never affects the Verdict.
+Expected Daily Mean Temperatures for the coming days. The next 7 of them make up the Weekly Mean.
 
 ## Lokalizacja (Location)
 The place the Verdict is computed for. It comes from the browser's geolocation or from a city the user picked. Weather is always fetched for the Location snapped to a 0.05° cell (`toCell` in domain.js), so the page and Season Alerts judge the same point.

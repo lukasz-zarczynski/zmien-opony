@@ -1,8 +1,6 @@
 import {
   THRESHOLD_C,
-  WEEK_DAYS,
   defaultDirection,
-  mean,
   rollingWeeklyMeans,
   toCell,
   verdict,
@@ -206,9 +204,6 @@ function render() {
   $("quip").textContent = t.quote(state.quip);
   $("quip").hidden = false;
 
-  const forecastMean = mean(dailyMeans.slice(todayIndex + 1, todayIndex + 1 + WEEK_DAYS));
-  $("verdict-forecast").textContent =
-    forecastMean === null ? "" : t.forecast(formatTemp(forecastMean));
   $("verdict-actions").hidden = false;
 
   $("shops").hidden = !isTime;

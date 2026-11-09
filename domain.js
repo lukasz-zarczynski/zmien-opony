@@ -27,11 +27,12 @@ export function mean(values) {
 }
 
 /**
- * Weekly Mean: mean of the 7 complete days before `todayIndex`.
+ * Weekly Mean: mean of the forecast for the 7 days after `todayIndex` (tomorrow through day 7).
+ * Looking ahead gives people time to book a tire shop before the queues.
  * Returns null when too many of those days are missing to trust the result.
  */
 export function weeklyMean(dailyMeans, todayIndex) {
-  const week = dailyMeans.slice(Math.max(0, todayIndex - WEEK_DAYS), todayIndex);
+  const week = dailyMeans.slice(todayIndex + 1, todayIndex + 1 + WEEK_DAYS);
   const known = week.filter((v) => typeof v === "number");
   return known.length >= WEEK_DAYS - 2 ? mean(known) : null;
 }

@@ -1,6 +1,6 @@
 # Zmień opony (zmienopony.com)
 
-A static page (Polish for Polish browsers, English for everyone else) that answers one question: is it time to change tires? It takes the user's location, averages the daily mean temperature over the last 7 complete days, and compares that average with the 7°C threshold. Terms are defined in [GLOSSARY.md](GLOSSARY.md).
+A static page (Polish for Polish browsers, English for everyone else) that answers one question: is it time to change tires? It takes the user's location, averages the forecast daily mean temperature for the next 7 days (tomorrow through day 7), and compares that average with the 7°C threshold. Terms are defined in [GLOSSARY.md](GLOSSARY.md).
 
 There is no build step. The page has no backend of its own; the browser calls these services directly:
 

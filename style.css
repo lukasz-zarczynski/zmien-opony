@@ -694,12 +694,6 @@ body[data-scene="sun"] .sun {
   margin-top: 24px;
 }
 
-.verdict__forecast {
-  margin: 0;
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
 .button {
   display: inline-flex;
   align-items: center;
